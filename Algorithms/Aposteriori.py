@@ -93,6 +93,9 @@ class Aposteriori(object):
         for state in DiceTypes:
             prob += fwd[state.value][len(fwd[0]) - 1]
 
+        if (float(prob) == 0.):
+            pass
+
         for i in range(len(rolls)):
             for state in DiceTypes:
                 result[state.value][i] = float(fwd[state.value][i]) * float(bwd[state.value][i]) / float(prob)
