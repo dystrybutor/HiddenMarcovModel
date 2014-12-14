@@ -20,5 +20,4 @@ class TestDice(TestCase):
             self.assertLessEqual(value, 6)
 
     def test_expect_exception_if_probability_sum_is_not_equal_1(self):
-        # self.assertRaises(ValueError, Dice(probabilities=[0.2, 0.1, 0.3, 0.1, 0.1, 0.5]))
         self.failUnlessRaises(ValueError, Dice, [0.2, 0.1, 0.3, 0.1, 0.1, 0.5])

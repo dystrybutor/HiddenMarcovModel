@@ -1,3 +1,6 @@
-class DiceTypes():
-    FAIR = "FAIR"
-    BIASED = "BIASED"
+from enum import Enum
+
+
+class DiceTypes(Enum):
+    FAIR = 0
+    BIASED = 1
