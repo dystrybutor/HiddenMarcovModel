@@ -29,9 +29,9 @@ class Aposteriori(object):
         return self._aposteriori_probability(fwd, bwd, rolls)
 
     def _calculate_forward(self, rolls):
-        forward_data = self._init_froward_data(rolls)
+        forward_data = self._init_forward_data(rolls)
 
-        for i in range(len(rolls) - 2):
+        for i in range(len(rolls) - 1):
             for state in DiceTypes:
                 forward_data[state.value][i + 1] = Decimal(0)
 
@@ -49,8 +49,8 @@ class Aposteriori(object):
 
         return forward_data
 
-    def _init_froward_data(self, rolls):
-        forward_data = self._initialize_empty_table(rolls, Decimal(0))
+    def _init_forward_data(self, rolls):
+        forward_data = self._initialize_table_with_value(len(rolls), Decimal(0))
 
         first_fair_probability = self.environment.get_emission_probability(DiceTypes.FAIR,
                                                                            rolls[0].roll_value)
@@ -65,9 +65,9 @@ class Aposteriori(object):
         return forward_data
 
     def _calculate_backward(self, rolls):
-        backward_data = self._init_backward_date(rolls)
+        backward_data = self._init_backward_data(rolls)
 
-        for i in range(len(rolls) - 2, -1):
+        for i in range(len(rolls) - 2, -1, -1):
             for state in DiceTypes:
                 backward_data[state.value][i] = Decimal(0)
                 for state_sum_element in DiceTypes:
@@ -76,17 +76,17 @@ class Aposteriori(object):
                     value = value * backward_data[state_sum_element.value][i + 1]
                     value = value * self.environment.get_transition_probability(state, state_sum_element)
 
-                    backward_data[state.value][i] = backward_data[state.value] + value
+                    backward_data[state.value][i] = backward_data[state.value][i] + value
 
         return backward_data
 
-    def _initialize_empty_table(self, rolls, value):
-        result = [[value for x in range(len(rolls))] for
+    def _initialize_table_with_value(self, length, value):
+        result = [[value for x in range(length)] for
                   j in range(len(DiceTypes))]
         return result
 
     def _aposteriori_probability(self, fwd, bwd, rolls):
-        result = self._initialize_empty_table(rolls, 0.0)
+        result = self._initialize_table_with_value(len(rolls), 0.0)
 
         prob = Decimal(0)
 
@@ -99,8 +99,8 @@ class Aposteriori(object):
 
         return result
 
-    def _init_backward_date(self, rolls):
-        return self._initialize_empty_table(rolls, Decimal(1))
+    def _init_backward_data(self, rolls):
+        return self._initialize_table_with_value(len(rolls), Decimal(1))
 
     def run_test(self):
         rolls = self.generator.generate_rolls(self.environment.number_of_throws)
