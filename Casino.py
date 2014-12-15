@@ -25,12 +25,13 @@ class Casino(object):
         for i in range(roll_number):
             if self.current_dice == DiceTypes.FAIR:
                 self.rolls.append(Roll(DiceTypes.FAIR, self.fair_dice.random_roll_value()))
-                if random.random() > self.from_fair_to_biased_probability:
-                    self.current_dice = DiceTypes.FAIR
+                ran = random.random()
+                if ran > self.from_fair_to_biased_probability:
+                    self.current_dice = DiceTypes.BIASED
             else:
                 self.rolls.append(Roll(DiceTypes.BIASED, self.biased_dice.random_roll_value()))
                 if random.random() > self.from_biased_to_fair_probability:
-                    self.current_dice = DiceTypes.BIASED
+                    self.current_dice = DiceTypes.FAIR
 
         logger.info("Created rolls: {}".format(self.rolls))
 
