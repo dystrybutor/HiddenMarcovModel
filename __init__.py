@@ -1,6 +1,8 @@
+from collections import __main__
 import logging
 
 ################################################# LOGGER CONFIGURATION #################################################
+from CMDParser import create_parser
 
 LOG_FILE     = 'casino.log'
 FILEMODE     = 'a'
@@ -21,3 +23,12 @@ root_logger = logging.getLogger()
 root_logger.addHandler(root_logger_file_handler)
 root_logger.setLevel(LEVEL)
 ########################################################################################################################
+
+
+def main():
+    parser = create_parser()
+
+    args = parser.parse_args()
+
+if __name__ == '__main__':
+    main()
