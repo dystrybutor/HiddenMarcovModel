@@ -37,13 +37,12 @@ class Aposteriori(object):
 
                 for state_sum_element in DiceTypes:
                     transition_probability = self.environment.get_transition_probability(state_sum_element, state)
-                    val = state_sum_element.value
-                    a = forward_data[state.value][i + 1]
-                    b= forward_data[state_sum_element.value][i]
+                    # val = state_sum_element.value
+                    # a = forward_data[state.value][i + 1]
+                    # b= forward_data[state_sum_element.value][i]
                     forward_data[state.value][i + 1] = (forward_data[state.value][i + 1]
                                                         + forward_data[state_sum_element.value][i]) * transition_probability
-                    asd = forward_data[state.value][i + 1]
-                    asd += 0
+                    # value = forward_data[state.value][i + 1]
 
                 emission_probability = self.environment.get_emission_probability(state, rolls[i + 1].roll_value)
 
