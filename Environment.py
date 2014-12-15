@@ -29,6 +29,6 @@ class Environment(object):
             return Decimal(1./6.)
         else:
             if roll_number == 6:
-                return Decimal(1./6.)
+                return Decimal(0.0)
             else:
-                return Decimal(1./6.)
+                return Decimal(1./5.)
