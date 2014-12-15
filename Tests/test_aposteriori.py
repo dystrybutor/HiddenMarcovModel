@@ -15,8 +15,8 @@ class TestAposteriori(TestCase):
         self.rolls = self.apst.generator.generate_rolls(self.apst.environment.number_of_throws)
 
     def test_initialize_table_with_value (self):
-        length = 1000;
-        value = 31;
+        length = 1000
+        value = 31
         table = self.apst._initialize_table_with_value(length=length, value=value)
         for i in range(len(DiceTypes)):
             for j in range(length):
