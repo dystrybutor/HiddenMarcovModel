@@ -45,8 +45,8 @@ class Viterbi():
                     vpath = objs[1]
                     vprobability = Decimal(objs[2])
 
-                    trans_value = self.environment.get_transition_probability(state, next_state)
-                    env_value = self.environment.get_emission_probability(state, roll.roll_value)
+                    trans_value = environment.get_transition_probability(state, next_state)
+                    env_value = environment.get_emission_probability(state, roll.roll_value)
                     prop_value = env_value * trans_value
 
                     prob = prob * prop_value
@@ -79,7 +79,7 @@ class Viterbi():
                 argmax.extend(vpath)
                 valmax = vprob
 
-        for k,v in T.items():
+        for k, v in T.items():
             logger.info("{} {}".format(k, v))
 
         return argmax
