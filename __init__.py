@@ -1,6 +1,6 @@
-from collections import __main__
 import logging
 from CMDParser import create_parser
+from MethodsFactory import MethodsFactory
 
 logger = logging.getLogger(__name__)
 # ################################################# LOGGER CONFIGURATION #################################################
@@ -30,11 +30,23 @@ def main():
     parser = create_parser()
 
     args = parser.parse_args()
+    rolls, result = None, None
+    if args.algorithm_type == "viterbi":
+        viterbi = MethodsFactory.create_viterbi(args.biased_probabilities, args.fair_to_biased, args.biased_to_fair,
+                                                args.number_of_throws)
 
-    if args.algorithm_type == "verbati":
-        print(args)
+        rolls, result =viterbi.run_test()
     elif args.algorithm_type == "aposteriori":
-        print(args)
+        aposteriori = MethodsFactory.create_aposteriori(args.biased_probabilities, args.fair_to_biased,
+                                                        args.biased_to_fair, args.number_of_throws)
+
+        rolls, result = aposteriori.run_test()
+
+    print("{0:20s}{1:20s}{2:20s}{3:20s}".format("Dice Type", "Roll Value", "nie wiem co to", "a co to?"))
+
+    for i in range(args.number_of_throws):
+        roll = rolls[i]
+        print("{0:20s}{1:20d}{2:20f}{3:20f}".format(roll.dice_type, roll.roll_value, result[0][i], result[1][i]))
 
 if __name__ == '__main__':
     main()

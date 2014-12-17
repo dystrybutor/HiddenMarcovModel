@@ -4,8 +4,8 @@ from argparse import ArgumentParser
 def create_parser():
     parser = ArgumentParser()
 
-    parser.add_argument("-b", "--biased_dice", dest="biased_dice",
-                        help="biased dice", type=str, required=True)
+    parser.add_argument("-b", "--biased", dest="biased_probabilities",
+                        help="biased dice", type=float, required=True, nargs='+')
 
     parser.add_argument("-pfb", "--fair_to_biased", dest="fair_to_biased",
                         help="probability from fair to biased", type=float, required=True)

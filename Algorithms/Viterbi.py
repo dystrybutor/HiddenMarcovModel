@@ -13,7 +13,7 @@ class Viterbi():
         self.environment = Environment(from_fair_to_biased_probability, from_biased_to_fair_probability,
                                   num_of_throws)
 
-        logger.info("Created {}".fromat(self.environment))
+        logger.info("Created {}".format(self.environment))
 
         self.generator = Casino(from_fair_to_biased_probability, from_biased_to_fair_probability, fair_dice, biased_dice)
 
@@ -72,7 +72,7 @@ class Viterbi():
             prob = Decimal(objs[0])
             vpath = objs[1]
             vprob = objs [2]
-            total = total.append(prob)
+            total = argmax.append(prob)
 
             if vprob > valmax:
                 argmax.clear()
@@ -89,7 +89,7 @@ class Viterbi():
 
         for state in DiceTypes:
             state_list = []
-            list.append(state)
+            state_list.append(state)
             T[state] = [self.environment.start_probability, state_list,
                         self.environment.start_probability]
 
