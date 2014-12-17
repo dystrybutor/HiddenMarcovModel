@@ -1,24 +1,24 @@
 from decimal import Decimal
 import logging
-from Casino import Casino
-from Environment import Environment
+from Croupier import Croupier
+from DiceUtils import DiceUtils
 from dice_types import DiceTypes
 
 logger = logging.getLogger(__name__)
 
 
 class Viterbi():
-    def __init__(self, from_fair_to_biased_probability, from_biased_to_fair_probability, fair_dice, biased_dice,
+    def __init__(self, fair_to_bribed_transition, bribed_to_fair_transition, fair_dice, bribed_dice,
                  num_of_throws):
-        self.environment = Environment(from_fair_to_biased_probability, from_biased_to_fair_probability,
-                                  num_of_throws)
+        self.environment = DiceUtils(fair_to_bribed_transition, bribed_to_fair_transition,
+                                     num_of_throws, bribed_dice)
 
         logger.info("Created {}".format(self.environment))
 
-        self.generator = Casino(from_fair_to_biased_probability, from_biased_to_fair_probability, fair_dice, biased_dice)
+        self.generator = Croupier(fair_to_bribed_transition, bribed_to_fair_transition, fair_dice, bribed_dice)
 
         logger.info("Craeted {}".format(self.generator))
-        
+
     def run_test(self):
         rolls = self.generator.generate_rolls(self.environment.number_of_throws)
         predicted_values = self._calculate(rolls, self.environment)
@@ -35,9 +35,9 @@ class Viterbi():
                 argmax = []
                 valmax = Decimal(0)
 
-                # prob = None
-                # vpath = []
-                # vprobability = None
+                prob = None
+                vpath = []
+                vprobability = None
 
                 for state in DiceTypes:
                     objs = T[state]
@@ -46,7 +46,7 @@ class Viterbi():
                     vprobability = Decimal(objs[2])
 
                     trans_value = environment.get_transition_probability(state, next_state)
-                    env_value = environment.get_emission_probability(state, roll.roll_value)
+                    env_value = environment.get_dice_side_probability(state, roll.roll_value)
                     prop_value = env_value * trans_value
 
                     prob = prob * prop_value
@@ -59,20 +59,19 @@ class Viterbi():
                         argmax.append(next_state)
                         valmax = vprobability
 
-
                     U[next_state] = [total, argmax, valmax]
             T = U
 
-        total = Decimal(0)
+        # total = Decimal(0)
         argmax = []
         valmax = Decimal(0)
 
         for state in DiceTypes:
             objs = T[state]
-            prob = Decimal(objs[0])
+            # prob = Decimal(objs[0])
             vpath = objs[1]
-            vprob = objs [2]
-            total = argmax.append(prob)
+            vprob = objs[2]
+            # total = total + prob
 
             if vprob > valmax:
                 argmax.clear()

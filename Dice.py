@@ -1,6 +1,6 @@
 import logging
 
-from InvertedDistribution import InvertedDistribution
+from SideDistribution import SideDistribution
 from dice_types import DiceTypes
 
 
@@ -8,20 +8,20 @@ logger = logging.getLogger(__name__)
 
 
 class Dice:
-    def __init__(self, probabilities=None):
-        if not probabilities:
+    def __init__(self, sides_probabilities=None):
+        if not sides_probabilities:
             self.dice_type = DiceTypes.FAIR
-            probabilities = [1./6 for x in range(6)]
+            sides_probabilities = [1. / 6 for x in range(6)]
         else:
-            self.dice_type = "Biased"
-            if not self._is_sum_equal_one(probabilities):
+            self.dice_type = DiceTypes.BRIBED
+            if not self._is_sum_equal_one(sides_probabilities):
                 raise ValueError
-
-        self.distribution = InvertedDistribution(probabilities)
+        self.sides_probabilities = sides_probabilities
+        self.distribution = SideDistribution(sides_probabilities)
         logger.info("Created new Dice: {}".format(self))
 
-    def _is_sum_equal_one(self, probabilities):
-        return sum(probabilities) == 1
+    def _is_sum_equal_one(self, sides_probabilities):
+        return sum(sides_probabilities) == 1
 
     def random_roll_value(self):
         return self.distribution.random_roll_value()

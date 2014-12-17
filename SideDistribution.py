@@ -3,16 +3,16 @@ import random
 __author__ = 'MM'
 
 
-class InvertedDistribution(object):
-    def __init__(self, probabilities):
-        self.probability_distribution = [0.0]
-        self.create_distribution(probabilities)
+class SideDistribution(object):
+    def __init__(self, sides_probabilities):
+        self.distribution = [0.0]
+        self.create_distribution(sides_probabilities)
 
-    def create_distribution(self, probabilities):
-        for i in range(1, len(probabilities)):
-            self.probability_distribution.append(0.)
+    def create_distribution(self, sides_probabilities):
+        for i in range(1, len(sides_probabilities)):
+            self.distribution.append(0.)
             for j in range(i):
-                self.probability_distribution[i] += probabilities[j]
+                self.distribution[i] += sides_probabilities[j]
 
     def random_roll_value(self):
         value = random.random()
@@ -31,6 +31,6 @@ class InvertedDistribution(object):
             return 6
 
     def _is_between(self, lower, greater, value):
-        if self.probability_distribution[lower] <= value < self.probability_distribution[greater]:
+        if self.distribution[lower] <= value < self.distribution[greater]:
             return True
         return False

@@ -1,0 +1,1 @@
+c:\Python34\python.exe __init__.py --bribed 0.1 0.2 0.3 0.1 0.10 .2 	-pfb 0.1 	-pbf 0.2 	-t viterbi 	-n 10

@@ -1,8 +1,8 @@
 from decimal import Decimal
 import logging
 
-from Casino import Casino
-from Environment import Environment
+from Croupier import Croupier
+from DiceUtils import DiceUtils
 from dice_types import DiceTypes
 
 
@@ -10,15 +10,15 @@ logger = logging.getLogger(__name__)
 
 
 class Aposteriori(object):
-    def __init__(self, from_fair_to_biased_probability, from_biased_to_fair_probability, fair_dice, biased_dice,
+    def __init__(self, fair_to_bribed_transition, bribed_to_fair_transition, fair_dice, bribed_dice,
                  number_of_throws):
-        self.environment = Environment(from_fair_to_biased_probability, from_biased_to_fair_probability,
-                                       number_of_throws)
+        self.environment = DiceUtils(fair_to_bribed_transition, bribed_to_fair_transition,
+                                     number_of_throws, bribed_dice)
 
         logger.info("Created {}".format(self.environment))
 
-        self.generator = Casino(from_fair_to_biased_probability, from_biased_to_fair_probability, fair_dice,
-                                biased_dice)
+        self.generator = Croupier(fair_to_bribed_transition, bribed_to_fair_transition, fair_dice,
+                                  bribed_dice)
 
         logger.info("Created {}".format(self.generator))
 
@@ -37,14 +37,11 @@ class Aposteriori(object):
 
                 for state_sum_element in DiceTypes:
                     transition_probability = self.environment.get_transition_probability(state_sum_element, state)
-                    # val = state_sum_element.value
-                    # a = forward_data[state.value][i + 1]
-                    # b= forward_data[state_sum_element.value][i]
-                    forward_data[state.value][i + 1] = (forward_data[state.value][i + 1]
-                                                        + forward_data[state_sum_element.value][i]) * transition_probability
-                    # value = forward_data[state.value][i + 1]
 
-                emission_probability = self.environment.get_emission_probability(state, rolls[i + 1].roll_value)
+                    forward_data[state.value][i + 1] = forward_data[state.value][i + 1] + \
+                                                       forward_data[state_sum_element.value][i] * transition_probability
+
+                emission_probability = self.environment.get_dice_side_probability(state, rolls[i + 1].roll_value)
 
                 forward_data[state.value][i + 1] = forward_data[state.value][i + 1] * emission_probability
 
@@ -55,15 +52,15 @@ class Aposteriori(object):
     def _init_forward_data(self, rolls):
         forward_data = self._initialize_table_with_value(len(rolls), Decimal(0))
 
-        first_fair_probability = self.environment.get_emission_probability(DiceTypes.FAIR,
-                                                                           rolls[0].roll_value)
+        first_fair_probability = self.environment.get_dice_side_probability(DiceTypes.FAIR,
+                                                                            rolls[0].roll_value)
 
         forward_data[DiceTypes.FAIR.value][0] = self.environment.start_probability * first_fair_probability
 
-        first_biased_probability = self.environment.get_emission_probability(DiceTypes.BIASED,
-                                                                             rolls[0].roll_value)
+        first_bribed_probability = self.environment.get_dice_side_probability(DiceTypes.BRIBED,
+                                                                              rolls[0].roll_value)
 
-        forward_data[DiceTypes.BIASED.value][0] = self.environment.start_probability * first_biased_probability
+        forward_data[DiceTypes.BRIBED.value][0] = self.environment.start_probability * first_bribed_probability
 
         return forward_data
 
@@ -78,6 +75,9 @@ class Aposteriori(object):
 
                     value = value * backward_data[state_sum_element.value][i + 1]
                     value = value * self.environment.get_transition_probability(state, state_sum_element)
+
+                    value = value * self.environment.get_dice_side_probability(state_sum_element,
+                                                                               rolls[i + 1].roll_value)
 
                     backward_data[state.value][i] = backward_data[state.value][i] + value
 
@@ -96,12 +96,13 @@ class Aposteriori(object):
         for state in DiceTypes:
             prob += fwd[state.value][len(fwd[0]) - 1]
 
-        if (float(prob) == 0.):
-            pass
-
         for i in range(len(rolls)):
             for state in DiceTypes:
-                result[state.value][i] = float(fwd[state.value][i]) * float(bwd[state.value][i]) / float(prob)
+                a = float(fwd[state.value][i])
+                b = float(bwd[state.value][i])
+                c = float(prob)
+                result[state.value][i] = a * b / c
+                # result[state.value][i] = float(fwd[state.value][i]) * float(bwd[state.value][i]) / float(prob)
 
         return result
 

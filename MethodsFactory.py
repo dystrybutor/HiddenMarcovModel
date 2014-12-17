@@ -8,23 +8,23 @@ class MethodsFactory(object):
         raise "Do not initialize this class"
 
     @staticmethod
-    def create_viterbi(biased_probabilities, from_fair_to_biased_probability, from_biased_to_fair_probability,
+    def create_viterbi(bribed_sides_probabilities, fair_to_bribed_transition, bribed_to_fair_transition,
                        number_of_throws):
         fair_dice = Dice()
-        biased_dice = Dice(biased_probabilities)
+        bribed_dice = Dice(bribed_sides_probabilities)
 
-        viterbi = Viterbi(from_fair_to_biased_probability, from_biased_to_fair_probability, fair_dice,
-                                  biased_dice, number_of_throws)
+        viterbi = Viterbi(fair_to_bribed_transition, bribed_to_fair_transition, fair_dice,
+                          bribed_dice, number_of_throws)
 
         return viterbi
 
     @staticmethod
-    def create_aposteriori(biased_probabilities, from_fair_to_biased_probability, from_biased_to_fair_probability,
-                    number_of_throws):
+    def create_aposteriori(bribed_sides_probabilities, fair_to_bribed_transition, bribed_to_fair_transition,
+                           number_of_throws):
         fair_dice = Dice()
-        biased_dice = Dice(biased_probabilities)
+        bribed_dice = Dice(bribed_sides_probabilities)
 
-        aposteriori = Aposteriori(from_fair_to_biased_probability, from_biased_to_fair_probability, fair_dice,
-                                  biased_dice, number_of_throws)
+        aposteriori = Aposteriori(fair_to_bribed_transition, bribed_to_fair_transition, fair_dice,
+                                  bribed_dice, number_of_throws)
 
         return aposteriori

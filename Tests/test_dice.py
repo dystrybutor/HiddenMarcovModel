@@ -5,7 +5,7 @@ from Dice import Dice
 class TestDice(TestCase):
     def setUp(self):
         self.fair_dice = Dice()
-        self.biased_dice = Dice(probabilities=[0.2, 0.1, 0.3, 0.1, 0.1, 0.2])
+        self.bribed_dice = Dice(sides_probabilities=[0.2, 0.1, 0.3, 0.1, 0.1, 0.2])
 
     def test_check_if_fair_dice_roll_values_are_valid(self):
         for _ in range(1000):
@@ -13,9 +13,9 @@ class TestDice(TestCase):
             self.assertGreaterEqual(value, 0)
             self.assertLessEqual(value, 6)
 
-    def test_check_if_biased_dice_roll_values_are_valid(self):
+    def test_check_if_bribed_dice_roll_values_are_valid(self):
         for _ in range(1000):
-            value = self.biased_dice.random_roll_value()
+            value = self.bribed_dice.random_roll_value()
             self.assertGreaterEqual(value, 0)
             self.assertLessEqual(value, 6)
 
